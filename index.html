@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Receipt Loop</title>
+<meta name="description" content="Run South Africa's asylum-registration receipt policy forward ten years. Real Home Affairs figures, two levers, four futures — an interactive feedback-loop model.">
+<meta property="og:title" content="The Receipt Loop">
+<meta property="og:description" content="Run South Africa's asylum-receipt policy forward ten years. Real Home Affairs figures, two levers, four futures. Can you find one where the backlog clears?">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Receipt Loop">
+<meta name="twitter:description" content="Run South Africa's asylum-receipt policy forward ten years. Real figures, two levers, four futures. Can you find one where the backlog clears?">
+<meta name="twitter:creator" content="@m_a_l_a_t_j_i">
+<!-- Once hosted, uncomment and point these at a 1200x630 screenshot of the chart, uploaded next to this file: -->
+<!-- <meta property="og:image" content="https://YOUR-URL/receipt-loop-card.png"> -->
+<!-- <meta name="twitter:image" content="https://YOUR-URL/receipt-loop-card.png"> -->
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single narrow column, simulator card as centrepiece, editorial text around it */
+:root{
+  --bg:#EFF1ED; --surface:#FBFBF8; --ink:#1C221F; --ink-2:#4E5853; --ink-3:#808B85;
+  --line:#DCE0DA; --grid:#E7EAE4; --axis:#C4CBC3;
+  --accent:#1C5E4A; --accent-ink:#F2F6F3;
+  --s-arr:#B07818; --s-cap:#038A73; --s-back:#C73B4B; --back-fill:rgba(199,59,75,.12);
+  --tile:#F3F4F0; --tip-bg:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141917; --surface:#1D2420; --ink:#E9EDE9; --ink-2:#A9B4AD; --ink-3:#76817B;
+    --line:#2E3832; --grid:#28312C; --axis:#45514B;
+    --accent:#4FC79A; --accent-ink:#0E1A15;
+    --s-arr:#BC862B; --s-cap:#22A47C; --s-back:#E26B52; --back-fill:rgba(226,107,82,.14);
+    --tile:#232B26; --tip-bg:#28312C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1D2420; --ink:#E9EDE9; --ink-2:#A9B4AD; --ink-3:#76817B;
+  --line:#2E3832; --grid:#28312C; --axis:#45514B;
+  --accent:#4FC79A; --accent-ink:#0E1A15;
+  --s-arr:#BC862B; --s-cap:#22A47C; --s-back:#E26B52; --back-fill:rgba(226,107,82,.14);
+  --tile:#232B26; --tip-bg:#28312C;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); margin:0; padding-block:0; padding-inline:16px;
+  font-family:"Spectral",Georgia,serif; font-size:16.5px; line-height:1.65;}
+.wrap{max-width:760px; margin:0 auto; padding-block:40px 56px;}
+.eyebrow{font-family:"Archivo",system-ui,sans-serif; font-weight:600; font-size:12px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin:0 0 14px;}
+h1{font-family:"Archivo",system-ui,sans-serif; font-weight:800; font-size:clamp(34px,7vw,52px);
+  line-height:1.02; letter-spacing:-.015em; margin:0 0 18px; text-wrap:balance;}
+.standfirst{font-size:18.5px; line-height:1.6; color:var(--ink); max-width:62ch; margin:0 0 10px;}
+.standfirst em{font-style:italic;}
+.kicker{font-size:15px; color:var(--ink-2); max-width:62ch; margin:0 0 30px;}
+h2{font-family:"Archivo",system-ui,sans-serif; font-weight:700; font-size:21px;
+  letter-spacing:-.01em; margin:44px 0 12px; text-wrap:balance;}
+p{max-width:65ch;}
+a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:2px;}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px; border-radius:4px;}
+
+/* ---- simulator card ---- */
+.sim{background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:20px; margin:8px 0 8px;}
+.sim-head{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:baseline; justify-content:space-between; margin-bottom:14px;}
+.sim-title{font-family:"Archivo",system-ui,sans-serif; font-weight:700; font-size:15px; margin:0;}
+.sim-sub{font-family:"Archivo",system-ui,sans-serif; font-size:12.5px; color:var(--ink-3); margin:0;}
+.presets{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 16px;}
+.presets button{font-family:"Archivo",system-ui,sans-serif; font-weight:600; font-size:13px;
+  padding:8px 13px; border-radius:999px; border:1px solid var(--line); background:transparent;
+  color:var(--ink-2); cursor:pointer;}
+.presets button:hover{border-color:var(--accent); color:var(--ink);}
+.presets button.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+.controls{display:grid; grid-template-columns:auto 1fr 1fr; gap:14px 18px; align-items:start; margin:0 0 6px;}
+@media (max-width:620px){.controls{grid-template-columns:1fr;}}
+.playbtn{display:flex; align-items:center; gap:9px; font-family:"Archivo",system-ui,sans-serif;
+  font-weight:700; font-size:14px; background:var(--accent); color:var(--accent-ink);
+  border:none; border-radius:10px; padding:11px 18px; cursor:pointer; align-self:center; min-width:112px; justify-content:center;}
+.playbtn svg{display:block}
+.lever label{display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+  font-family:"Archivo",system-ui,sans-serif; font-weight:600; font-size:13.5px; margin-bottom:2px;}
+.lever .val{font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:13px; color:var(--accent);}
+.lever input[type=range]{width:100%; accent-color:var(--accent); margin:4px 0 2px; height:22px;}
+.lever small{display:block; font-family:"Archivo",system-ui,sans-serif; font-size:11.5px;
+  line-height:1.45; color:var(--ink-3);}
+.caption{font-family:"Archivo",system-ui,sans-serif; font-size:13.5px; font-weight:500;
+  color:var(--ink-2); border-left:3px solid var(--accent); padding:4px 0 4px 12px; margin:14px 0 16px; min-height:22px;}
+.tiles{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:0 0 18px;}
+@media (max-width:620px){.tiles{grid-template-columns:repeat(2,1fr);}}
+.tile{background:var(--tile); border-radius:9px; padding:10px 12px;}
+.tile b{display:block; font-family:"Archivo",system-ui,sans-serif; font-weight:600; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px;}
+.tile span{font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:17.5px; color:var(--ink);
+  font-variant-numeric:tabular-nums; white-space:nowrap;}
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-family:"Archivo",system-ui,sans-serif;
+  font-size:12.5px; color:var(--ink-2); margin:0 0 8px;}
+.legend i{display:inline-block; width:14px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px;}
+.chartwrap{position:relative; touch-action:pan-y;}
+.chartwrap svg{display:block; width:100%;}
+.ptitle{font-family:"Archivo",system-ui,sans-serif; font-weight:600; font-size:12px;
+  color:var(--ink-3); margin:10px 0 4px;}
+.tick{font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-3);}
+.dlabel{font-family:"Archivo",system-ui,sans-serif; font-size:11.5px; font-weight:600; fill:var(--ink);}
+.tip{position:absolute; pointer-events:none; background:var(--tip-bg); border:1px solid var(--line);
+  border-radius:8px; padding:8px 11px; font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+  line-height:1.6; color:var(--ink); box-shadow:0 4px 14px rgba(0,0,0,.10); white-space:nowrap; display:none; z-index:5;}
+.tip b{font-family:"Archivo",system-ui,sans-serif; font-size:11px; font-weight:700; display:block; margin-bottom:2px;}
+.tip i{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px;}
+details.tbl{margin-top:14px; font-family:"Archivo",system-ui,sans-serif; font-size:13px;}
+details.tbl summary{cursor:pointer; color:var(--ink-2); font-weight:600;}
+details.tbl table{border-collapse:collapse; width:100%; margin-top:10px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; font-variant-numeric:tabular-nums;}
+details.tbl th{font-family:"Archivo",system-ui,sans-serif; font-size:11px; text-transform:uppercase;
+  letter-spacing:.05em; color:var(--ink-3); text-align:right; padding:6px 8px; border-bottom:1px solid var(--line);}
+details.tbl th:first-child,details.tbl td:first-child{text-align:left;}
+details.tbl td{text-align:right; padding:6px 8px; border-bottom:1px solid var(--grid); color:var(--ink-2);}
+
+/* ---- loops + facts ---- */
+.loops{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0 0;}
+@media (max-width:620px){.loops{grid-template-columns:1fr;}}
+.loop{border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--surface);}
+.loop h3{font-family:"Archivo",system-ui,sans-serif; font-weight:700; font-size:14.5px; margin:0 0 8px;
+  display:flex; align-items:center; gap:8px;}
+.loop h3 .badge{font-size:11px; font-weight:700; border-radius:5px; padding:2px 6px; letter-spacing:.04em;}
+.loop.r .badge{background:var(--back-fill); color:var(--s-back);}
+.loop.b .badge{background:rgba(3,138,115,.12); color:var(--s-cap);}
+.loop p{font-size:14.5px; line-height:1.6; color:var(--ink-2); margin:0;}
+.facts{list-style:none; padding:0; margin:12px 0 0;}
+.facts li{padding:11px 0; border-bottom:1px solid var(--line); font-size:15.5px; line-height:1.55; max-width:none;}
+.facts li:first-child{border-top:1px solid var(--line);}
+.facts .fig{font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:14.5px; color:var(--accent); white-space:nowrap;}
+.note{font-family:"Archivo",system-ui,sans-serif; font-size:13px; line-height:1.6; color:var(--ink-3);
+  border-top:1px solid var(--line); margin-top:40px; padding-top:16px;}
+.note p{max-width:none; margin:0 0 8px;}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto;} }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">South Africa · Home Affairs · an interactive model</p>
+  <h1>The receipt loop</h1>
+  <p class="standfirst">From <em>10 November 2026</em>, South Africa begins issuing asylum-registration receipts that shield first-time applicants from deportation while their claims are decided — the government's answer to the Constitutional Court ruling of 7 July. Supporters call it constitutional compliance. Critics call it a pull factor. Both are describing feedback loops.</p>
+  <p class="kicker">This model lets you run them. It starts from the Department of Home Affairs' own October 2026 figures, then hands you the two levers that decide the next decade. Press play, or drag the levers mid-run and steer.</p>
+
+  <div class="sim" id="sim">
+    <div class="sim-head">
+      <p class="sim-title">Ten years from launch, one month at a time</p>
+      <p class="sim-sub">Nov 2026 → Nov 2036 · figures in people</p>
+    </div>
+
+    <div class="presets" role="group" aria-label="Scenario presets">
+      <button id="p-status" data-pull="0" data-build="0">Status quo</button>
+      <button id="p-evidence" data-pull="60" data-build="40" class="on">Evidence-based</button>
+      <button id="p-worst" data-pull="85" data-build="15">Worst case</button>
+      <button id="p-reform" data-pull="40" data-build="85">Reform wins</button>
+    </div>
+
+    <div class="controls">
+      <button class="playbtn" id="play" aria-label="Play the simulation">
+        <svg id="ic-play" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M1 1l10 6-10 6z" fill="currentColor"/></svg>
+        <svg id="ic-pause" width="12" height="14" viewBox="0 0 12 14" aria-hidden="true" style="display:none"><rect x="1" y="1" width="3.6" height="12" fill="currentColor"/><rect x="7.4" y="1" width="3.6" height="12" fill="currentColor"/></svg>
+        <span id="play-txt">Play</span>
+      </button>
+      <div class="lever">
+        <label for="pull">Word-of-mouth pull <span class="val" id="pull-val">60</span></label>
+        <input type="range" id="pull" min="0" max="100" step="1" value="60" aria-describedby="pull-help">
+        <small id="pull-help">How strongly the deportation shield draws new arrivals once word spreads along migration routes.</small>
+      </div>
+      <div class="lever">
+        <label for="build">Capacity build speed <span class="val" id="build-val">40</span></label>
+        <input type="range" id="build" min="0" max="100" step="1" value="40" aria-describedby="build-help">
+        <small id="build-help">How fast Home Affairs expands its decision-making in response to backlog pressure.</small>
+      </div>
+    </div>
+
+    <p class="caption" id="caption" aria-live="polite"></p>
+
+    <div class="tiles">
+      <div class="tile"><b>Date</b><span id="t-date">—</span></div>
+      <div class="tile"><b>Applications /mo</b><span id="t-arr">—</span></div>
+      <div class="tile"><b>Backlog</b><span id="t-back">—</span></div>
+      <div class="tile"><b>Average wait</b><span id="t-wait">—</span></div>
+    </div>
+
+    <div class="legend" aria-hidden="true">
+      <span><i style="background:var(--s-arr)"></i>New applications</span>
+      <span><i style="background:var(--s-cap)"></i>Decisions (capacity)</span>
+      <span><i style="background:var(--s-back)"></i>Backlog</span>
+    </div>
+
+    <p class="ptitle">Flows · people per month</p>
+    <div class="chartwrap" id="cw">
+      <svg id="svg-flow" role="img" aria-label="New applications and decision capacity per month, November 2026 to November 2036"></svg>
+      <p class="ptitle">Stock · people waiting for a decision</p>
+      <svg id="svg-stock" role="img" aria-label="Backlog of people waiting for a decision, November 2026 to November 2036"></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+
+    <details class="tbl">
+      <summary>View the numbers behind this run</summary>
+      <table id="tbl" aria-label="Yearly values of the current simulation run">
+        <thead><tr><th>Date</th><th>Apps /mo</th><th>Decisions /mo</th><th>Backlog</th><th>Wait</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+  </div>
+
+  <h2>The two loops you are steering</h2>
+  <div class="loops">
+    <div class="loop r">
+      <h3><span class="badge">R · reinforcing</span> The pull loop</h3>
+      <p>A receipt shields you from deportation. The risk of coming falls. Word spreads along the routes. More people register, more receipts circulate, and each turn amplifies the next — at word-of-mouth speed.</p>
+    </div>
+    <div class="loop b">
+      <h3><span class="badge">B · balancing</span> The strain loop</h3>
+      <p>More claims swell the backlog. Waits stretch into years. Legal and political pressure builds, capacity expands, and the backlog slowly drains — at government speed.</p>
+    </div>
+  </div>
+  <p style="margin-top:16px">The whole policy question is which loop runs faster. Try the <strong>Status quo</strong> preset first: even with both levers at zero, 82&nbsp;000 people stay stuck at nine-year waits for a decade, because the system was already running at the edge of its capacity before the receipts existed.</p>
+
+  <h2>Grounded in the real numbers</h2>
+  <ul class="facts">
+    <li><span class="fig">≈ 800 /month</span> — new asylum applications. Fewer than <a href="https://www.citizen.co.za/news/south-africa/home-affairs-confirms-90-000-refugee-appellants-unaccounted-for-in-south-africa/">10&nbsp;000 a year arrived every year from 2020 to 2025</a>, apart from about 20&nbsp;000 in 2023.</li>
+    <li><span class="fig">≈ 780 /month</span> — decisions. In the past year officials decided about 9&nbsp;300 claims: <a href="https://iol.co.za/news/south-africa/2026-06-24-why-south-africas-asylum-system-is-facing-unprecedented-pressure/">1&nbsp;934 approved, 7&nbsp;392 rejected</a>.</li>
+    <li><span class="fig">82&nbsp;348</span> — active asylum cases form the starting backlog, alongside <a href="https://groundup.org.za/article/asylum-seeker-appeal-backlog-rises-to-161000/">161&nbsp;000 appeal cases</a> at the Refugee Appeals Authority, which sit outside this chart.</li>
+    <li><span class="fig">223&nbsp;000</span> — new applicants in 2009 alone. Arrivals <a href="https://www.citizen.co.za/news/south-africa/home-affairs-confirms-90-000-refugee-appellants-unaccounted-for-in-south-africa/">have spiked more than tenfold before</a>; that elasticity is what the pull lever turns.</li>
+    <li><span class="fig">− 19&nbsp;000</span> — appeal cases cleared in 2025/26, the <a href="https://iol.co.za/news/south-africa/2026-07-09-home-affairs-cuts-refugee-appeals-backlog-by-nearly-19-000-cases-through-system-reforms/">biggest reduction in years</a>; that reform pace is what the capacity lever turns.</li>
+  </ul>
+
+  <div class="note">
+    <p><strong>What this is.</strong> A conceptual system-dynamics model built for public reasoning, not a Department of Home Affairs forecast. The starting figures are real; every future on the chart is a scenario you chose. The arrivals response and reform pace are stylised from the historical record above.</p>
+    <p>A model by <a href="https://x.com/m_a_l_a_t_j_i">@m_a_l_a_t_j_i</a> · Grounded October 2026 · Sources: Department of Home Affairs disclosures to Parliament, reported by <a href="https://groundup.org.za/article/asylum-seeker-appeal-backlog-rises-to-161000/">GroundUp</a>, <a href="https://www.citizen.co.za/news/south-africa/home-affairs-confirms-90-000-refugee-appellants-unaccounted-for-in-south-africa/">The Citizen</a>, <a href="https://iol.co.za/news/south-africa/2026-06-24-why-south-africas-asylum-system-is-facing-unprecedented-pressure/">IOL</a>, <a href="https://www.polity.org.za/article/da-welcomes-schreibers-home-affairs-clearing-more-than-19000-refugee-appeals-backlog-2026-07-10">Polity</a> and <a href="https://www.ewn.co.za/2026/05/28/asylum-appeal-backlog-hits-160k-due-to-decline-in-public-services-says-human-rights-lawyer">EWN</a>.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var A0=800, C0=778, B0=82348, MONTHS=120;
+var MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var nf=new Intl.NumberFormat("en-ZA");
+function dateOf(m){var t=10+m; return MN[t%12]+" "+(2026+Math.floor(t/12));}
+function fmt(n){return nf.format(Math.round(n));}
+
+var st={S:0,B:B0,C:C0,m:0,hA:[],hB:[],hC:[]};
+function resetState(){st.S=0; st.B=B0; st.C=C0; st.m=0; st.hA=[]; st.hB=[]; st.hC=[];}
+function stepOnce(pull,build){
+  var waitY=st.B/st.C/12;
+  var a=A0*(1+pull*st.S*(2.4+0.16*Math.min(waitY,10)));
+  st.hA.push(a); st.hB.push(st.B); st.hC.push(st.C);
+  st.S+=(0.005+0.06*pull)*(1-st.S);
+  var proc=Math.min(st.B+a,st.C);
+  st.B=Math.max(0,st.B+a-proc);
+  st.C*=1+build*0.018*Math.min(waitY,10)/10;
+  st.m++;
+  return a;
+}
+function runFull(pull,build){ resetState(); for(var i=0;i<=MONTHS;i++) stepOnce(pull,build); }
+
+/* ---- chart ---- */
+var cw=document.getElementById("cw"),
+    svgF=document.getElementById("svg-flow"),
+    svgS=document.getElementById("svg-stock"),
+    tip=document.getElementById("tip");
+var ML=48, MR=16, HF=190, HS=150, PT=8, PB=22;
+var W=640, css={};
+function readCss(){
+  var c=getComputedStyle(document.documentElement);
+  css={arr:c.getPropertyValue("--s-arr").trim(), cap:c.getPropertyValue("--s-cap").trim(),
+       back:c.getPropertyValue("--s-back").trim(), bf:c.getPropertyValue("--back-fill").trim(),
+       grid:c.getPropertyValue("--grid").trim(), axis:c.getPropertyValue("--axis").trim()};
+}
+var FMAX=4000, SMAX=400000;
+function xOf(m){return ML+(m/MONTHS)*(W-ML-MR);}
+function yF(v){return PT+(1-Math.min(v,FMAX)/FMAX)*(HF-PT-PB);}
+function yS(v){return PT+(1-Math.min(v,SMAX)/SMAX)*(HS-PT-PB);}
+function el(n,at){var e=document.createElementNS("http://www.w3.org/2000/svg",n);for(var k in at)e.setAttribute(k,at[k]);return e;}
+var dyn={};
+function frame(svg,H,ymax,steps,unitDiv){
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.setAttribute("height",H);
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  for(var i=0;i<=steps;i++){
+    var v=ymax*i/steps, y=PT+(1-i/steps)*(H-PT-PB);
+    svg.appendChild(el("line",{x1:ML,x2:W-MR,y1:y,y2:y,stroke:i===0?css.axis:css.grid,"stroke-width":1}));
+    var t=el("text",{x:ML-7,y:y+3.5,"text-anchor":"end","class":"tick"});
+    t.textContent=unitDiv?fmt(v/unitDiv)+(v?"k":""):fmt(v);
+    svg.appendChild(t);
+  }
+  var yrs=[14,38,62,86,110];
+  for(var j=0;j<yrs.length;j++){
+    var tx=el("text",{x:xOf(yrs[j]),y:H-6,"text-anchor":"middle","class":"tick"});
+    tx.textContent=String(2028+j*2);
+    svg.appendChild(tx);
+  }
+  return svg;
+}
+function layout(){
+  W=Math.max(320,cw.clientWidth);
+  readCss();
+  frame(svgF,HF,FMAX,4,0);
+  frame(svgS,HS,SMAX,4,1000);
+  dyn.xr=el("line",{y1:PT,y2:HF-PB,stroke:css.axis,"stroke-width":1,"stroke-dasharray":"3 3",opacity:0});
+  dyn.xr2=el("line",{y1:PT,y2:HS-PB,stroke:css.axis,"stroke-width":1,"stroke-dasharray":"3 3",opacity:0});
+  dyn.area=el("path",{fill:css.bf,stroke:"none"});
+  dyn.lB=el("path",{fill:"none",stroke:css.back,"stroke-width":2.5,"stroke-linejoin":"round"});
+  dyn.lA=el("path",{fill:"none",stroke:css.arr,"stroke-width":2,"stroke-linejoin":"round"});
+  dyn.lC=el("path",{fill:"none",stroke:css.cap,"stroke-width":2,"stroke-linejoin":"round"});
+  dyn.dA=el("circle",{r:3.5,fill:css.arr,stroke:"var(--surface)","stroke-width":1.5,opacity:0});
+  dyn.dC=el("circle",{r:3.5,fill:css.cap,stroke:"var(--surface)","stroke-width":1.5,opacity:0});
+  dyn.dB=el("circle",{r:4,fill:css.back,stroke:"var(--surface)","stroke-width":1.5,opacity:0});
+  dyn.tA=el("text",{"class":"dlabel","text-anchor":"end"}); dyn.tA.textContent="Applications";
+  dyn.tC=el("text",{"class":"dlabel","text-anchor":"end"}); dyn.tC.textContent="Decisions";
+  dyn.tB=el("text",{"class":"dlabel","text-anchor":"end"}); dyn.tB.textContent="Backlog";
+  svgF.appendChild(dyn.lA); svgF.appendChild(dyn.lC); svgF.appendChild(dyn.xr);
+  svgF.appendChild(dyn.dA); svgF.appendChild(dyn.dC); svgF.appendChild(dyn.tA); svgF.appendChild(dyn.tC);
+  svgS.appendChild(dyn.area); svgS.appendChild(dyn.lB); svgS.appendChild(dyn.xr2);
+  svgS.appendChild(dyn.dB); svgS.appendChild(dyn.tB);
+}
+function path(h,yfn){var d="";for(var i=0;i<h.length;i++){d+=(i?"L":"M")+xOf(i).toFixed(1)+" "+yfn(h[i]).toFixed(1);}return d;}
+function render(){
+  var n=st.hA.length; if(!n)return;
+  dyn.lA.setAttribute("d",path(st.hA,yF));
+  dyn.lC.setAttribute("d",path(st.hC,yF));
+  dyn.lB.setAttribute("d",path(st.hB,yS));
+  dyn.area.setAttribute("d",path(st.hB,yS)+"L"+xOf(n-1).toFixed(1)+" "+yS(0)+"L"+xOf(0)+" "+yS(0)+"Z");
+  var i=n-1,x=xOf(i);
+  put(dyn.dA,x,yF(st.hA[i])); put(dyn.dC,x,yF(st.hC[i])); put(dyn.dB,x,yS(st.hB[i]));
+  var ya=yF(st.hA[i])-8, yc=yF(st.hC[i])+15;
+  if(yc-ya<22){var mid=(ya+yc)/2; ya=mid-11; yc=mid+11;}
+  lbl(dyn.tA,x-6,Math.max(ya,16)); lbl(dyn.tC,x-6,Math.min(yc,HF-PB-4));
+  lbl(dyn.tB,x-6,Math.max(yS(st.hB[i])-9,16));
+  var a=st.hA[i],b=st.hB[i],c=st.hC[i];
+  set("t-date",dateOf(i)); set("t-arr",fmt(a)); set("t-back",fmt(b));
+  set("t-wait",(b/c/12).toFixed(1)+" yrs");
+}
+function put(e,x,y){e.setAttribute("cx",x);e.setAttribute("cy",y);e.setAttribute("opacity",1);}
+function lbl(e,x,y){e.setAttribute("x",x);e.setAttribute("y",y);}
+function set(id,v){document.getElementById(id).textContent=v;}
+
+/* ---- table ---- */
+function fillTable(){
+  var tb=document.querySelector("#tbl tbody"); tb.innerHTML="";
+  for(var m=0;m<st.hA.length;m+=12){
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+dateOf(m)+"</td><td>"+fmt(st.hA[m])+"</td><td>"+fmt(st.hC[m])+
+      "</td><td>"+fmt(st.hB[m])+"</td><td>"+(st.hB[m]/st.hC[m]/12).toFixed(1)+" yrs</td>";
+    tb.appendChild(tr);
+  }
+}
+
+/* ---- captions ---- */
+var capEl=document.getElementById("caption");
+function liveCaption(){
+  var i=st.hA.length-1, a=st.hA[i], b=st.hB[i], c=st.hC[i];
+  var pull=+pullIn.value, build=+buildIn.value;
+  if(i<4) return "November 2026 — receipts begin shielding first-time applicants.";
+  if(pull<3&&build<3) return "No pull, no reform — the queue simply stands still.";
+  if(st.S<0.6&&a>A0*1.15) return "Word travels along the routes — applications climb.";
+  if(a>c*1.05) return "Applications outpace decisions — the backlog compounds.";
+  if(c>=a&&b>B0*1.05) return "Capacity overtakes applications — the backlog starts to drain.";
+  return "The system is finding its balance.";
+}
+function finalCaption(){
+  var i=st.hA.length-1, b=st.hB[i], c=st.hC[i], w=(b/c/12).toFixed(1);
+  var d=b>B0*1.03?"the backlog has grown to":(b<B0*0.97?"the backlog has fallen to":"the backlog still stands at");
+  return "By "+dateOf(i)+", "+d+" "+fmt(b)+" people, waiting "+w+" years on average. Drag the levers and replay.";
+}
+
+/* ---- play ---- */
+var playBtn=document.getElementById("play"), playTxt=document.getElementById("play-txt"),
+    icP=document.getElementById("ic-play"), icQ=document.getElementById("ic-pause");
+var pullIn=document.getElementById("pull"), buildIn=document.getElementById("build");
+var timer=null;
+var reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function pv(){return +pullIn.value/100;} function bv(){return +buildIn.value/100;}
+function idleRun(){ runFull(pv(),bv()); render(); fillTable(); capEl.textContent=finalCaption(); }
+function stop(){ if(timer){clearInterval(timer);timer=null;} icP.style.display="";icQ.style.display="none";playTxt.textContent=st.m>MONTHS?"Replay":"Play"; }
+function tick(){
+  stepOnce(pv(),bv()); render(); capEl.textContent=liveCaption();
+  if(st.m>MONTHS){ stop(); fillTable(); capEl.textContent=finalCaption(); }
+}
+playBtn.addEventListener("click",function(){
+  if(timer){stop();playTxt.textContent="Resume";return;}
+  if(st.m>MONTHS||st.hA.length>MONTHS){ resetState(); }
+  if(reduced){ idleRun(); return; }
+  icP.style.display="none"; icQ.style.display=""; playTxt.textContent="Pause";
+  timer=setInterval(tick,62);
+});
+function onLever(valEl){return function(){
+  valEl.textContent=this.value;
+  document.querySelectorAll(".presets button").forEach(function(b){b.classList.remove("on");});
+  if(!timer) idleRun();
+};}
+pullIn.addEventListener("input",onLever(document.getElementById("pull-val")));
+buildIn.addEventListener("input",onLever(document.getElementById("build-val")));
+document.querySelectorAll(".presets button").forEach(function(b){
+  b.addEventListener("click",function(){
+    stop();
+    document.querySelectorAll(".presets button").forEach(function(x){x.classList.remove("on");});
+    b.classList.add("on");
+    pullIn.value=b.dataset.pull; buildIn.value=b.dataset.build;
+    set("pull-val",b.dataset.pull); set("build-val",b.dataset.build);
+    idleRun(); playTxt.textContent="Play";
+  });
+});
+
+/* ---- hover / touch tooltip ---- */
+function showTip(ev){
+  var r=cw.getBoundingClientRect(), px=ev.clientX-r.left;
+  var fw=svgF.getBoundingClientRect().width, scale=fw/W;
+  var mx=(px/scale-ML)/((W-ML-MR)/MONTHS);
+  var m=Math.round(Math.max(0,Math.min(MONTHS,mx)));
+  if(m>=st.hA.length) m=st.hA.length-1;
+  if(m<0) return;
+  var x=xOf(m)*scale;
+  dyn.xr.setAttribute("x1",xOf(m));dyn.xr.setAttribute("x2",xOf(m));dyn.xr.setAttribute("opacity",1);
+  dyn.xr2.setAttribute("x1",xOf(m));dyn.xr2.setAttribute("x2",xOf(m));dyn.xr2.setAttribute("opacity",1);
+  tip.innerHTML="<b>"+dateOf(m)+"</b>"+
+    "<i style='background:"+css.arr+"'></i>"+fmt(st.hA[m])+" apps /mo<br>"+
+    "<i style='background:"+css.cap+"'></i>"+fmt(st.hC[m])+" decisions /mo<br>"+
+    "<i style='background:"+css.back+"'></i>"+fmt(st.hB[m])+" waiting · "+(st.hB[m]/st.hC[m]/12).toFixed(1)+" yrs";
+  tip.style.display="block";
+  var ty=ev.clientY-r.top+14, tw=tip.offsetWidth;
+  tip.style.left=Math.max(0,Math.min(x+12,r.width-tw-2))+"px";
+  tip.style.top=Math.min(ty,r.height-tip.offsetHeight-4)+"px";
+}
+function hideTip(){tip.style.display="none";dyn.xr.setAttribute("opacity",0);dyn.xr2.setAttribute("opacity",0);}
+cw.addEventListener("pointermove",showTip);
+cw.addEventListener("pointerdown",showTip);
+cw.addEventListener("pointerleave",hideTip);
+
+/* ---- boot / resize / theme ---- */
+function rebuild(){ layout(); render(); }
+layout(); idleRun();
+var ro=new ResizeObserver(function(){ rebuild(); });
+ro.observe(cw);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",rebuild);
+new MutationObserver(rebuild).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
+
+</body>
+</html>
